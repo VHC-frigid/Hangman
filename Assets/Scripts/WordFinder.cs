@@ -10,7 +10,12 @@ public class WordFinder : MonoBehaviour
     public List<string> possibleWords = new List<string>();
 
     public Text wordsDisplay;
-    
+
+    public List<Text> letterHolderList = new List<Text>();
+    public GameObject letterPrefab;
+    public Transform letterHolder;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,7 +37,7 @@ public class WordFinder : MonoBehaviour
 
     public void SearchString(string inputString)
     {
-        //contin all teh words we find that have the input string inside
+        //contin all the words we find that have the input string inside
         string wordsFound = "";
         wordsDisplay.text = "";
 
