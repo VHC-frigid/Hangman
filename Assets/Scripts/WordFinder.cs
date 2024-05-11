@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,29 +11,46 @@ public class WordFinder : MonoBehaviour
     public List<string> possibleWords = new List<string>();
 
     public Text wordsDisplay;
+    public Text incorrectWord;
+    public int maxIncorrectguesses = 8;
 
-    public List<Text> letterHolderList = new List<Text>();
-    public GameObject letterPrefab;
-    public Transform letterHolder;
-
+    private string currentWord;
+    private List<char> guessedLetters = new List<char>();
+    private int incorrectGuesses = 0;
 
     // Start is called before the first frame update
     void Start()
     {
+  
         TextAsset allWords = Resources.Load("words") as TextAsset;
 
-        string[] words = allWords.text.Split(',');
-
-        //for each entry in the wrods array
-        foreach (string currentWord in words)
+        if (allWords == null || string.IsNullOrEmpty(allWords.text))
         {
-            if (currentWord.Length > 3)
-            {
-                possibleWords.Add(currentWord);
-            }
+            Debug.LogError("failed to load word list");
+            return;
         }
         
-        //possibleWords = new List<string>(words);
+        string[] words = allWords.text.Split(',');
+
+        //for each entry in the word array
+        foreach (string word in words)
+        {
+            if (word.Length > 3)
+            {
+                possibleWords.Add(word);
+            }
+        }
+
+        if (possibleWords.Count == 0)
+        {
+            Debug.LogError("List not bloody working");
+            return;
+        }
+
+        currentWord = possibleWords[Random.Range(0, possibleWords.Count)];
+        
+        UpdateWordDisplay();
+        
     }
 
     public void SearchString(string inputString)
@@ -89,4 +107,85 @@ public class WordFinder : MonoBehaviour
         wordsDisplay.text = wordsFound;
     }
 
+    void UpdateWordDisplay()
+    {
+        string displayText = "";
+
+        foreach (char c in currentWord)
+        {
+            if (guessedLetters.Contains(c))
+            {
+                displayText += c + " ";
+
+            }
+            else
+            {
+                displayText += "_ ";
+            }
+        }
+
+        wordsDisplay.text = displayText;
+    }
+
+    void CheckGuess(char guess)
+    {
+        guessedLetters.Add(guess);
+
+        if (!currentWord.Contains(guess.ToString()))
+        {
+            incorrectGuesses++;
+            incorrectWord.text = "Incorrect" + incorrectGuesses;
+
+            if (incorrectGuesses >= maxIncorrectguesses)
+            {
+                wordsDisplay.text = currentWord;
+                Debug.Log("you lose the currnt word was " + currentWord);
+            }
+        }
+
+        UpdateWordDisplay();
+
+        if (WordGuessed())
+        {
+            Debug.Log("win");
+        }
+    }
+
+    bool WordGuessed()
+    {
+        foreach (char c in currentWord)
+        {
+            if (!guessedLetters.Contains(c))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    // Function to call when a letter button is clicked
+    public void GuessSubmitted(string guess)
+    {
+        // Check if the input is a single letter
+        if (guess.Length == 1)
+        {
+            char guessedLetter = guess.ToLower()[0];
+            // Check if the letter has already been guessed
+            if (!guessedLetters.Contains(guessedLetter))
+            {
+                // Process the guess
+                CheckGuess(guessedLetter);
+            }
+            else
+            {
+                Debug.Log("You already guessed that letter!");
+            }
+        }
+        else
+        {
+            Debug.Log("Please enter a single letter.");
+        }
+
+    }
 }
+
