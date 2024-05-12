@@ -17,6 +17,7 @@ public class WordFinder : MonoBehaviour
     public Text subTitle;
     public Text answer;
     public GameObject goPanel;
+    public Text guesseredletters;
 
     private string currentWord;
     private List<char> guessedLetters = new List<char>();
@@ -157,6 +158,7 @@ public class WordFinder : MonoBehaviour
         {
             incorrectGuesses++;
             incorrectWord.text = "Incorrect Try " + incorrectGuesses;
+            guesseredletters.text = string.Join(" ", guessedLetters);
 
             if (incorrectGuesses >= maxIncorrectguesses)
             {
@@ -214,5 +216,7 @@ public class WordFinder : MonoBehaviour
         }
 
     }
+
+
 }
 
