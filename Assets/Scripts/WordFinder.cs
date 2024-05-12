@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class WordFinder : MonoBehaviour
 {
@@ -13,15 +14,23 @@ public class WordFinder : MonoBehaviour
     public Text wordsDisplay;
     public Text incorrectWord;
     public int maxIncorrectguesses = 8;
+    public Text subTitle;
+    public Text answer;
+    public GameObject goPanel;
 
     private string currentWord;
     private List<char> guessedLetters = new List<char>();
     private int incorrectGuesses = 0;
 
+    bool gameOver;
+
     // Start is called before the first frame update
     void Start()
     {
-  
+
+        gameOver = false;
+        goPanel.SetActive(false);
+        
         TextAsset allWords = Resources.Load("words") as TextAsset;
 
         if (allWords == null || string.IsNullOrEmpty(allWords.text))
@@ -51,6 +60,19 @@ public class WordFinder : MonoBehaviour
         
         UpdateWordDisplay();
         
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            SceneManager.LoadScene(0);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            Application.Quit();
+        }
     }
 
     public void SearchString(string inputString)
@@ -134,12 +156,16 @@ public class WordFinder : MonoBehaviour
         if (!currentWord.Contains(guess.ToString()))
         {
             incorrectGuesses++;
-            incorrectWord.text = "Incorrect" + incorrectGuesses;
+            incorrectWord.text = "Incorrect Try " + incorrectGuesses;
 
             if (incorrectGuesses >= maxIncorrectguesses)
             {
-                wordsDisplay.text = currentWord;
-                Debug.Log("you lose the currnt word was " + currentWord);
+                answer.text = currentWord;
+                goPanel.SetActive(true);
+                subTitle.text = "Le Fail";
+                
+                //Debug.Log("you lose the currnt word was " + currentWord);
+
             }
         }
 
@@ -147,7 +173,8 @@ public class WordFinder : MonoBehaviour
 
         if (WordGuessed())
         {
-            Debug.Log("win");
+            subTitle.text = "You Win";
+            //Debug.Log("win");
         }
     }
 
