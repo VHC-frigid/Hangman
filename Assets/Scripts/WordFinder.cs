@@ -15,6 +15,7 @@ public class WordFinder : MonoBehaviour
     public Text incorrectWord;
     public int maxIncorrectguesses = 8;
     public Text subTitle;
+    public Text answerTitle;
     public Text answer;
     public GameObject goPanel;
     public Text guesseredletters;
@@ -164,10 +165,8 @@ public class WordFinder : MonoBehaviour
             {
                 answer.text = currentWord;
                 goPanel.SetActive(true);
-                subTitle.text = "Le Fail";
-                
+                subTitle.text = "Le Fail";               
                 //Debug.Log("you lose the currnt word was " + currentWord);
-
             }
         }
 
@@ -175,7 +174,9 @@ public class WordFinder : MonoBehaviour
 
         if (WordGuessed())
         {
+            goPanel.SetActive(true);
             subTitle.text = "You Win";
+            answerTitle.text = " ";
             //Debug.Log("win");
         }
     }
