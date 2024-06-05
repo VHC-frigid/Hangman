@@ -11,13 +11,15 @@ public class WordFinder : MonoBehaviour
     //initialise a new list of strings
     public List<string> possibleWords = new List<string>();
 
+    public GameObject goPanel;
+    public GameObject pausePanel;
+
     public Text wordsDisplay;
     public Text incorrectWord;
     public int maxIncorrectguesses = 8;
     public Text subTitle;
     public Text answerTitle;
     public Text answer;
-    public GameObject goPanel;
     public Text guesseredletters;
 
     private string currentWord;
@@ -32,6 +34,7 @@ public class WordFinder : MonoBehaviour
 
         gameOver = false;
         goPanel.SetActive(false);
+        pausePanel.SetActive(false);
         
         TextAsset allWords = Resources.Load("words") as TextAsset;
 
@@ -75,6 +78,16 @@ public class WordFinder : MonoBehaviour
         {
             Application.Quit();
         }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            pausePanel.SetActive(true);
+        }   
+    }
+
+    public void ClosePause()
+    {
+        pausePanel.SetActive(false);
     }
 
     public void SearchString(string inputString)
